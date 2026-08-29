@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Academia da Literacia Financeira</title>
+<title>Quizz de Literacia Financeira</title>
 <style>
 *{box-sizing:border-box}
 body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#07142f;color:#173d35}
@@ -74,7 +74,7 @@ h2{margin:14px 0 7px;color:#246b59}
 <div id="app">
 <div class="wrap">
 <header class="header">
-  <h1>Academia da Literacia Financeira</h1>
+  <h1>Quizz de Literacia Financeira</h1>
   <p>Aprende • Pensa • Escolhe • Conquista!</p>
 </header>
 
@@ -217,18 +217,28 @@ function start(n){
   showQuestion();
   window.scrollTo({top:0,behavior:"smooth"});
 }
+let currentCorrect=0;
 function showQuestion(){
   const q=levels[current].qs[index];
   $("qmeta").textContent=`Desafio ${index+1} de ${levels[current].qs.length}`;
   $("fill").style.width=(index/levels[current].qs.length*100)+"%";
   $("feedback").textContent="";
   $("feedback").className="feedback";
-  $("question").innerHTML=`<p>${q[0]}</p><div class="choices">${q[1].map((x,i)=>`<button onclick="answer(${i})">${x}</button>`).join("")}</div>`;
+
+  // Baralha as opções de cada pergunta para que a resposta correta
+  // não fique sempre na mesma posição.
+  const options=q[1].map((text,i)=>({text,correct:i===q[2]}));
+  for(let i=options.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [options[i],options[j]]=[options[j],options[i]];
+  }
+  currentCorrect=options.findIndex(o=>o.correct);
+
+  $("question").innerHTML=`<p>${q[0]}</p><div class="choices">${options.map((o,i)=>`<button onclick="answer(${i})">${o.text}</button>`).join("")}</div>`;
 }
 function answer(choice){
-  const q=levels[current].qs[index];
   document.querySelectorAll(".choices button").forEach(b=>b.disabled=true);
-  const ok=choice===q[2];
+  const ok=choice===currentCorrect;
   if(ok){score++;$("score").textContent=score;$("feedback").textContent="✅ Muito bem!";$("feedback").className="feedback good";}
   else{$("feedback").textContent="❌ Não é essa. Continua a aprender!";$("feedback").className="feedback bad";}
   setTimeout(()=>{
