@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Academia da Literacia Financeira</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#07142f;color:#173d35}
+#app{min-height:100vh;padding:24px 14px;background:
+radial-gradient(circle at 15% 10%,rgba(75,124,255,.22),transparent 24%),
+radial-gradient(circle at 85% 15%,rgba(201,71,255,.18),transparent 25%),
+radial-gradient(circle at 50% 90%,rgba(0,210,220,.12),transparent 25%),#07142f;
+position:relative;overflow:hidden}
+#app:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.45;background-image:
+radial-gradient(circle,#fff 1px,transparent 1.5px),radial-gradient(circle,#9fc6ff 1px,transparent 1.5px);
+background-size:100px 100px,157px 157px;background-position:12px 20px,58px 70px}
+.wrap{position:relative;max-width:1120px;margin:auto}
+.header{text-align:center;color:white;padding:5px 10px 20px}
+.header h1{margin:5px 0 4px;font-size:clamp(28px,5vw,48px);letter-spacing:1px}
+.header p{margin:0;font-size:16px}
+.pig{font-size:62px;filter:drop-shadow(0 6px 4px #0007);margin-top:4px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px 20px;padding:15px 12px 30px}
+.level{cursor:pointer;text-align:center;position:relative;transition:.18s}
+.level:hover{transform:translateY(-6px) scale(1.02)}
+.button{width:104px;height:104px;border-radius:50%;margin:0 auto -35px;position:relative;z-index:2;border:6px solid #ffffff99;
+box-shadow:inset 0 5px 7px #fff8,inset 0 -8px 10px #0004,0 8px 0 #0005,0 14px 20px #0005}
+.button:before,.button:after{content:"";position:absolute;left:50%;top:50%;width:56px;height:10px;border-radius:10px;background:white;box-shadow:0 2px 3px #0005}
+.button:before{transform:translate(-50%,-50%) rotate(45deg)}
+.button:after{transform:translate(-50%,-50%) rotate(-45deg)}
+.level:nth-child(1) .button{background:linear-gradient(145deg,#ff6868,#d71818)}
+.level:nth-child(2) .button{background:linear-gradient(145deg,#55a8ff,#0754d6)}
+.level:nth-child(3) .button{background:linear-gradient(145deg,#79e75b,#16a72a)}
+.level:nth-child(4) .button{background:linear-gradient(145deg,#ffe65c,#e6a600)}
+.level:nth-child(5) .button{background:linear-gradient(145deg,#ad63ff,#6421d7)}
+.level:nth-child(6) .button{background:linear-gradient(145deg,#ff9344,#e64e00)}
+.level:nth-child(7) .button{background:linear-gradient(145deg,#ff61b1,#d91d72)}
+.level:nth-child(8) .button{background:linear-gradient(145deg,#42e9df,#08a9a2)}
+.label{background:linear-gradient(#fffdf5,#efdfbc);border:3px solid #ffffffcc;border-radius:17px;
+box-shadow:0 7px 0 #0004,0 12px 20px #0005,inset 0 2px 0 white;min-height:82px;padding:43px 8px 10px;
+font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center}
+.level small{display:block;color:white;margin-top:9px;font-weight:bold;text-shadow:0 2px 3px #000}
+.done{position:absolute;right:0;top:0;width:35px;height:35px;border-radius:50%;background:#39c76a;color:white;border:3px solid white;
+font-weight:900;font-size:20px;display:none;align-items:center;justify-content:center;z-index:3;box-shadow:0 3px 0 #16803b}
+.level.completed .done{display:flex}
+#quiz{display:none;background:#fff;border-radius:24px;padding:24px;box-shadow:0 12px 35px #0006}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+button{font:inherit;cursor:pointer;border:0;border-radius:11px;padding:11px 16px;background:#246b59;color:white;
+box-shadow:0 3px 0 #15483c;font-weight:bold}
+button:hover{filter:brightness(1.05)}
+button:disabled{cursor:default;opacity:.75}
+.back{background:#53656a}
+h2{margin:14px 0 7px;color:#246b59}
+.progress{height:13px;background:#dce7e3;border-radius:20px;overflow:hidden;margin:12px 0}
+.fill{height:100%;width:0;background:#246b59;transition:.25s}
+.qmeta{font-weight:bold;color:#54736b}
+.question{font-size:20px;line-height:1.45;margin:20px 0 12px}
+.choices button{display:block;width:100%;text-align:left;margin:10px 0;background:#edf4f1;color:#173d35;box-shadow:0 3px 0 #c5d7d0}
+.feedback{min-height:28px;font-weight:bold;margin:10px 0}
+.good{color:#176d55}.bad{color:#a13b3b}
+.result{text-align:center;padding:25px 10px}
+.result .big{font-size:54px}
+.diploma{margin-top:20px;background:white;border-radius:22px;padding:22px;text-align:center;box-shadow:0 10px 30px #0004}
+.certificate{border:4px double #246b59;border-radius:16px;padding:18px}
+.progressText{color:#496b63;font-weight:bold}
+.print{background:#9b6a00;box-shadow:0 3px 0 #694900}
+.reset{background:#8d3d3d;box-shadow:0 3px 0 #5d2727;font-size:12px;padding:8px 11px}
+@media(max-width:800px){.grid{grid-template-columns:repeat(2,1fr);gap:22px 10px}.label{font-size:14px}.button{width:84px;height:84px}.button:before,.button:after{width:44px;height:8px}}
+@media(max-width:430px){.grid{padding-left:4px;padding-right:4px}.label{min-height:76px}.question{font-size:18px}}
+@media print{body{background:white}.header,.grid,.back,.diploma .reset{display:none!important}#app{background:white;padding:0}.wrap{max-width:none}#quiz{display:block!important;box-shadow:none}.result{padding-top:80px}.print{display:none}}
+</style>
+</head>
+<body>
+<div id="app">
+<div class="wrap">
+<header class="header">
+  <div class="pig">🐷</div>
+  <h1>Academia da Literacia Financeira</h1>
+  <p>Aprende • Pensa • Escolhe • Conquista!</p>
+</header>
+
+<section id="home">
+  <div id="grid" class="grid"></div>
+</section>
+
+<section id="quiz">
+  <div class="top">
+    <button class="back" onclick="goHome()">← Voltar às missões</button>
+    <div>⭐ Pontuação: <span id="score">0</span></div>
+  </div>
+  <h2 id="title"></h2>
+  <div class="progress"><div id="fill" class="fill"></div></div>
+  <div class="qmeta" id="qmeta"></div>
+  <div id="question" class="question"></div>
+  <div id="feedback" class="feedback"></div>
+</section>
+
+<section class="diploma">
+  <div class="certificate">
+    <h2>🏆 Diploma de Especialista em Literacia Financeira</h2>
+    <p id="status" class="progressText"></p>
+    <p>Nome: ______________________________________________</p>
+    <button class="print" onclick="window.print()">🖨️ Imprimir diploma</button>
+    <button class="reset" onclick="resetProgress()">Recomeçar progresso</button>
+  </div>
+</section>
+</div>
+</div>
+
+<script>
+const levels={
+1:{name:"Missão 1 — O dinheiro",qs:[
+["Qual é uma forma segura de guardar dinheiro para o futuro?",["Guardá-lo num local seguro","Gastar tudo no mesmo dia","Perdê-lo de propósito"],0],
+["Para que serve o dinheiro?",["Para comprar bens e serviços","Só para brincar","Para nunca fazer escolhas"],0],
+["Quando recebemos dinheiro por um trabalho, chamamos-lhe…",["rendimento","desperdício","troco"],0],
+["Qual destas é uma necessidade?",["Alimentação","Um brinquedo novo","Um jogo de computador"],0],
+["Antes de comprar alguma coisa, é importante…",["pensar se precisamos dela","comprar imediatamente","escolher sempre a mais cara"],0],
+["O que é poupar?",["Guardar uma parte do dinheiro para usar mais tarde","Gastar todo o dinheiro","Pedir dinheiro emprestado"],0],
+["Se temos 10 € e gastamos 3 €, quanto sobra?",["7 €","8 €","13 €"],0],
+["Qual é uma boa atitude perante o dinheiro?",["Planear antes de gastar","Gastar sem pensar","Esconder as despesas"],0],
+["O preço de um produto indica…",["quanto precisamos de pagar por ele","quanto vamos receber","quantos produtos existem"],0],
+["Uma carteira serve principalmente para…",["guardar dinheiro e cartões","cozinhar","medir o tempo"],0]]},
+2:{name:"Missão 2 — Necessidades e desejos",qs:[
+["Qual é uma necessidade?",["Água","Um brinquedo","Um videojogo"],0],
+["Qual é um desejo?",["Ter um novo jogo","Ter água para beber","Ter alimentação"],0],
+["Se só temos dinheiro para uma coisa, devemos primeiro escolher…",["uma necessidade","o desejo mais caro","qualquer coisa ao acaso"],0],
+["Uma lista de compras ajuda-nos a…",["comprar apenas o que planeámos","gastar mais","esquecer o que precisamos"],0],
+["Comprar por impulso significa…",["comprar sem pensar antes","comparar preços","fazer uma lista"],0],
+["Qual é a melhor pergunta antes de comprar um brinquedo?",["Preciso mesmo dele?","É o mais caro?","Posso comprar tudo?"],0],
+["Uma promoção é sempre uma boa compra?",["Não, é preciso verificar se precisamos do produto","Sim, sempre","Só se for muito colorida"],0],
+["Se tens 15 € e um livro custa 12 €, podes comprá-lo e ainda ficar com…",["3 €","2 €","27 €"],0],
+["O que devemos fazer quando queremos muito uma coisa mas não precisamos dela?",["Pensar e decidir se vale a pena","Comprar imediatamente","Pedir vários empréstimos"],0],
+["Distinguir necessidades de desejos ajuda-nos a…",["tomar melhores decisões","gastar sem limites","evitar poupar"],0]]},
+3:{name:"Missão 3 — Orçamento",qs:[
+["O que é um orçamento?",["Um plano para organizar o dinheiro","Uma lista de brinquedos","Uma conta bancária"],0],
+["Num orçamento devemos registar…",["dinheiro que recebemos e que gastamos","apenas os desejos","apenas os preços altos"],0],
+["Se recebes 20 € e gastas 8 €, quanto podes poupar?",["12 €","28 €","8 €"],0],
+["Uma despesa é…",["dinheiro que gastamos","dinheiro que recebemos","dinheiro que encontramos"],0],
+["Um rendimento é…",["dinheiro que recebemos","dinheiro que gastamos","um desconto"],0],
+["Porque é útil planear as despesas?",["Para saber para onde vai o dinheiro","Para gastar tudo","Para evitar conhecer os preços"],0],
+["Se tens 30 € e queres guardar 10 €, quanto podes gastar?",["20 €","40 €","10 €"],0],
+["Qual destas é uma despesa?",["Comprar um caderno","Receber uma mesada","Receber um presente"],0],
+["Qual destas atitudes ajuda a cumprir um orçamento?",["Comparar o que queremos com o dinheiro disponível","Ignorar o dinheiro disponível","Comprar primeiro e pensar depois"],0],
+["Um orçamento pode ser alterado quando…",["as nossas necessidades ou rendimentos mudam","nunca","só quando gastamos tudo"],0]]},
+4:{name:"Missão 4 — Poupar",qs:[
+["Qual é a principal vantagem de poupar?",["Ter dinheiro disponível para objetivos futuros","Gastar mais hoje","Nunca fazer planos"],0],
+["Para poupar melhor, podemos…",["definir um objetivo","gastar sem registar","evitar comparar preços"],0],
+["Se poupares 5 € por semana durante 4 semanas, juntas…",["20 €","9 €","25 €"],0],
+["O que é uma meta de poupança?",["Um objetivo de dinheiro que queremos alcançar","Uma compra por impulso","Um tipo de moeda"],0],
+["Guardar dinheiro para comprar algo no futuro é…",["poupar","desperdiçar","pedir emprestado"],0],
+["Se queres poupar 50 € e já tens 30 €, faltam…",["20 €","80 €","30 €"],0],
+["Qual é uma boa estratégia?",["Poupar primeiro uma parte e depois planear o restante","Gastar tudo e poupar o que sobrar sempre","Nunca definir objetivos"],0],
+["Uma pequena poupança regular pode…",["crescer ao longo do tempo","desaparecer automaticamente","obrigar-nos a gastar"],0],
+["Para acompanhar uma meta de poupança, podemos usar…",["uma tabela ou gráfico","apenas a memória","uma lista de desejos"],0],
+["Se temos uma despesa inesperada, uma poupança pode ajudar-nos a…",["enfrentá-la sem gastar todo o dinheiro disponível","comprar mais brinquedos","evitar fazer contas"],0]]},
+5:{name:"Missão 5 — Compras inteligentes",qs:[
+["O que devemos comparar antes de comprar?",["Preços e características","A cor da loja","O tamanho da fila apenas"],0],
+["Um produto custa 8 € numa loja e 6 € noutra. Onde é mais barato?",["Na loja onde custa 6 €","Na loja onde custa 8 €","São iguais"],0],
+["Uma etiqueta de preço serve para…",["indicar quanto custa o produto","indicar a idade do comprador","indicar a hora"],0],
+["Se um produto de 20 € tem desconto de 5 €, o novo preço é…",["15 €","25 €","5 €"],0],
+["Comprar mais barato significa sempre fazer a melhor escolha?",["Não; também devemos verificar qualidade e necessidade","Sim, sempre","Só se a embalagem for grande"],0],
+["Antes de comprar online, é importante…",["verificar o preço total e a loja","clicar imediatamente","dar dados pessoais a qualquer pessoa"],0],
+["O troco é…",["o dinheiro devolvido quando pagamos mais do que o preço","um desconto futuro","o preço inicial"],0],
+["Se pagares 10 € por algo que custa 7 €, recebes…",["3 € de troco","17 €","7 €"],0],
+["Uma compra responsável envolve…",["pensar antes de gastar","comprar tudo o que vemos","ignorar o orçamento"],0],
+["Uma lista de compras pode ajudar a evitar…",["compras desnecessárias","a poupança","a comparação de preços"],0]]},
+6:{name:"Missão 6 — Bancos e pagamentos",qs:[
+["Para que serve uma conta bancária?",["Guardar e gerir dinheiro","Guardar brinquedos","Medir distâncias"],0],
+["Um cartão bancário pode ser usado para…",["fazer pagamentos","cozinhar","medir temperaturas"],0],
+["O PIN de um cartão deve ser…",["mantido em segredo","partilhado com amigos","escrito no cartão"],0],
+["Ao pagar com cartão, devemos…",["confirmar o valor antes de aceitar","dar o PIN a qualquer pessoa","ignorar o valor"],0],
+["Um pagamento em dinheiro significa…",["entregar notas ou moedas","usar sempre um cartão","pedir um empréstimo"],0],
+["Qual destes é um meio de pagamento?",["Moedas","Uma régua","Um lápis"],0],
+["Devemos partilhar os dados do cartão com desconhecidos?",["Não","Sim","Só se pedirem com muita pressa"],0],
+["Um recibo pode ajudar-nos a…",["comprovar uma compra","aumentar o preço","ganhar dinheiro automaticamente"],0],
+["Antes de confirmar um pagamento online, devemos verificar…",["o destinatário e o valor","apenas a imagem","nada"],0],
+["Se encontrarmos um pagamento que não reconhecemos, devemos…",["pedir ajuda a um adulto de confiança e contactar a entidade responsável","ignorar sempre","partilhar os dados do cartão"],0]]},
+7:{name:"Missão 7 — Segurança financeira",qs:[
+["Uma palavra-passe segura deve ser…",["difícil de adivinhar e não partilhada","o nosso nome","1234"],0],
+["Se alguém desconhecido pede os teus dados bancários, deves…",["não os fornecer e pedir ajuda a um adulto","enviá-los rapidamente","publicá-los online"],0],
+["Uma mensagem que promete dinheiro fácil pode ser…",["uma tentativa de burla","sempre verdadeira","um prémio garantido"],0],
+["Antes de clicar num link estranho, devemos…",["verificar a origem e pedir ajuda","clicar imediatamente","enviar os nossos dados"],0],
+["Os dados pessoais devem ser…",["protegidos","publicados em qualquer site","partilhados com desconhecidos"],0],
+["Se uma oferta parece boa demais para ser verdade…",["devemos desconfiar e verificar","devemos aceitar sem pensar","devemos pagar primeiro"],0],
+["O que devemos fazer se alguém pedir o código secreto do cartão?",["Não o dar","Dá-lo sempre","Publicá-lo"],0],
+["Para comprar online com segurança, devemos preferir…",["sites e formas de pagamento confiáveis","qualquer site desconhecido","links recebidos de estranhos"],0],
+["Uma burla é…",["uma tentativa de enganar alguém para obter dinheiro ou dados","uma forma de poupar","uma promoção normal"],0],
+["Quando temos dúvidas sobre uma situação financeira, é boa ideia…",["falar com um adulto de confiança","esconder o problema","dar os nossos dados"],0]]},
+8:{name:"Missão 8 — Pequeno especialista",qs:[
+["Tens 25 €. Queres comprar um livro de 12 € e poupar 8 €. Quanto sobra?",["5 €","17 €","13 €"],0],
+["Uma bicicleta custa 120 €. Tens 80 €. Quanto falta?",["40 €","200 €","30 €"],0],
+["Tens 50 €. Gastas 15 € e depois 10 €. Quanto sobra?",["25 €","35 €","45 €"],0],
+["Uma família recebe 100 € e decide poupar 20 €. Quanto pode gastar?",["80 €","120 €","20 €"],0],
+["Um jogo custa 18 € e tens 30 €. Depois da compra ficas com…",["12 €","48 €","18 €"],0],
+["Poupar para um objetivo é uma forma de…",["planear o futuro","gastar sem pensar","evitar fazer contas"],0],
+["Se dois produtos são semelhantes, comparar preços pode ajudar a…",["escolher uma opção mais económica","gastar mais","evitar o orçamento"],0],
+["Qual é a melhor atitude perante uma mensagem que pede dados bancários?",["Não fornecer dados e pedir ajuda","Responder com todos os dados","Partilhar com os amigos"],0],
+["Se tens 60 € e queres guardar 25 €, podes gastar…",["35 €","85 €","25 €"],0],
+["Qual é a regra mais importante de todas?",["Pensar antes de gastar e cuidar do nosso dinheiro","Gastar tudo rapidamente","Nunca fazer perguntas"],0]]
+}
+};
+
+let current=0,index=0,score=0;
+let completed=JSON.parse(localStorage.getItem("lfCompleted")||"[]");
+
+const $=id=>document.getElementById(id);
+
+function renderLevels(){
+  $("grid").innerHTML="";
+  Object.keys(levels).forEach(n=>{
+    const d=document.createElement("div");
+    d.className="level"+(completed.includes(Number(n))?" completed":"");
+    d.innerHTML=`<span class="done">✓</span><div class="button"></div>
+      <div class="label">${levels[n].name.replace(/^Missão \d+ — /,"")}</div><small>Missão ${n}</small>`;
+    d.onclick=()=>start(Number(n));
+    $("grid").appendChild(d);
+  });
+  $("status").textContent=`Progresso: ${completed.length} de 8 missões concluídas.`;
+}
+function start(n){
+  current=n;index=0;score=0;
+  $("score").textContent=score;
+  $("home").style.display="none";
+  $("quiz").style.display="block";
+  $("title").textContent=levels[n].name;
+  showQuestion();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function showQuestion(){
+  const q=levels[current].qs[index];
+  $("qmeta").textContent=`Desafio ${index+1} de ${levels[current].qs.length}`;
+  $("fill").style.width=(index/levels[current].qs.length*100)+"%";
+  $("feedback").textContent="";
+  $("feedback").className="feedback";
+  $("question").innerHTML=`<p>${q[0]}</p><div class="choices">${q[1].map((x,i)=>`<button onclick="answer(${i})">${x}</button>`).join("")}</div>`;
+}
+function answer(choice){
+  const q=levels[current].qs[index];
+  document.querySelectorAll(".choices button").forEach(b=>b.disabled=true);
+  const ok=choice===q[2];
+  if(ok){score++;$("score").textContent=score;$("feedback").textContent="✅ Muito bem!";$("feedback").className="feedback good";}
+  else{$("feedback").textContent="❌ Não é essa. Continua a aprender!";$("feedback").className="feedback bad";}
+  setTimeout(()=>{
+    index++;
+    if(index<levels[current].qs.length) showQuestion();
+    else finish();
+  },650);
+}
+function finish(){
+  $("fill").style.width="100%";
+  const passed=score>=8;
+  if(passed && !completed.includes(current)){
+    completed.push(current);
+    localStorage.setItem("lfCompleted",JSON.stringify(completed));
+  }
+  $("question").innerHTML=`<div class="result">
+    <div class="big">${passed?"🏆":"💪"}</div>
+    <h2>${passed?"Missão concluída!":"Continua a praticar!"}</h2>
+    <p>Acertaste <strong>${score}</strong> em ${levels[current].qs.length} desafios.</p>
+    <button onclick="goHome()">Escolher outra missão</button>
+    <button onclick="start(${current})">Tentar novamente</button>
+  </div>`;
+  $("feedback").textContent="";
+  renderLevels();
+}
+function goHome(){
+  $("quiz").style.display="none";
+  $("home").style.display="block";
+  renderLevels();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function resetProgress(){
+  if(confirm("Queres apagar todo o progresso e começar de novo?")){
+    completed=[];
+    localStorage.removeItem("lfCompleted");
+    renderLevels();
+  }
+}
+renderLevels();
+</script>
+</body>
+</html>
