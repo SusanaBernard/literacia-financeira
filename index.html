@@ -58,7 +58,7 @@ h2{margin:14px 0 7px;color:#246b59}
 .choices button{display:block;width:100%;text-align:left;margin:10px 0;background:#edf4f1;color:#173d35;box-shadow:0 3px 0 #c5d7d0}
 .feedback{min-height:28px;font-weight:bold;margin:10px 0}
 .good{color:#176d55}.bad{color:#a13b3b}
-.result{text-align:center;padding:25px 10px}
+.result{text-align:center;padding:25px 10px}.result button{margin:6px}
 .result .big{font-size:54px}
 .diploma{margin-top:20px;background:white;border-radius:22px;padding:22px;text-align:center;box-shadow:0 10px 30px #0004}
 .certificate{border:4px double #246b59;border-radius:16px;padding:18px}
@@ -74,7 +74,6 @@ h2{margin:14px 0 7px;color:#246b59}
 <div id="app">
 <div class="wrap">
 <header class="header">
-  <div class="pig">🐷</div>
   <h1>Academia da Literacia Financeira</h1>
   <p>Aprende • Pensa • Escolhe • Conquista!</p>
 </header>
@@ -95,15 +94,7 @@ h2{margin:14px 0 7px;color:#246b59}
   <div id="feedback" class="feedback"></div>
 </section>
 
-<section class="diploma">
-  <div class="certificate">
-    <h2>🏆 Diploma de Especialista em Literacia Financeira</h2>
-    <p id="status" class="progressText"></p>
-    <p>Nome: ______________________________________________</p>
-    <button class="print" onclick="window.print()">🖨️ Imprimir diploma</button>
-    <button class="reset" onclick="resetProgress()">Recomeçar progresso</button>
-  </div>
-</section>
+
 </div>
 </div>
 
@@ -257,8 +248,8 @@ function finish(){
     <div class="big">${passed?"🏆":"💪"}</div>
     <h2>${passed?"Missão concluída!":"Continua a praticar!"}</h2>
     <p>Acertaste <strong>${score}</strong> em ${levels[current].qs.length} desafios.</p>
-    <button onclick="goHome()">Escolher outra missão</button>
-    <button onclick="start(${current})">Tentar novamente</button>
+    <button onclick="goHome()">← Voltar às missões</button>
+    <button onclick="start(${current})">🔄 Tentar novamente</button>
   </div>`;
   $("feedback").textContent="";
   renderLevels();
